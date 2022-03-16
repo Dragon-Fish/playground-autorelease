@@ -1,0 +1,31 @@
+name: Release Notes
+
+on:
+  push:
+    tags:
+      - '*.*.*'
+
+jobs:
+  release:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v2
+        with:
+          # Fetch all history
+          fetch-depth: 0
+
+      - name: Build Changelog
+        id: changelog
+        uses: mikepenz/release-changelog-builder-action@v1  with:
+        with:
+          configuration: ".github/workflows/changelog.config.json"
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: GitHub Release
+        uses: softprops/action-gh-release@v1
+        with:
+          prerelease: false
+          body: |
+            ${{ steps.changelog.outputs.changelog }}

@@ -40,14 +40,11 @@ jobs:
           fi
           changelog="${changelog//'%'/'%25'}"
           changelog="${changelog//$'\n'/'  %0A'}"
-          echo "::set-output name=value::Change set since ${last_tag:-the beginning}:  %0A%0A$changelog"
+          echo "::set-output name=value::Changes since ${last_tag:-the beginning}:  %0A%0A$changelog"
 
       - name: GitHub Release
         uses: softprops/action-gh-release@v1
         with:
-          tag_name: ${{ github.ref }}
-          release_name: ${{ github.ref }}
-          draft: false
           prerelease: false
           body: |
             ${{ steps.changelog.outputs.value }}
